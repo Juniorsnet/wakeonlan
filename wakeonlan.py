@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-import socket, select
+import socket, selectors
 import struct
 import signal
 import sys
 import argparse
 
 class Program:
+    sel = selectors.DefaultSelector();
     running = True;
     StringMagicPacket = "!6s"+16*"6s";
     def SocketListener(self, port: int, bcast: str):
@@ -14,11 +15,15 @@ class Program:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM);
         s.setblocking(False);
         ret = s.bind(addr);
+        SelKey = self.sel.register(s,selectors.EVENT_READ,data=None);
         print(f"Escuchando en {port}");
         while (self.running):
-            readers, _, _ = select.select([s],[],[],5);
+            #readers, _, _ = select.select([s],[],[],5);
+            readers = self.sel.select(timeout=5);
             if(len(readers)>0):
-                msg = s.recvfrom(256);#los magic packets deberían ser de 102 bytes.
+                #Get the socket
+                key,mask = readers[0];
+                msg = key.fileobj.recvfrom(256);#los magic packets deberían ser de 102 bytes.
             else:
                 continue;
             data = msg[0];
@@ -50,7 +55,7 @@ class Program:
 
 #static main
 def main():
-    print(f"Iniciando WOL proxy by Gsus V1.1");
+    print(f"Iniciando WOL proxy by Gsus V1.2");
     parser = argparse.ArgumentParser(prog="Wake on LAN proxy",
     description="Reenvia los Magic packet que viene de afuera hacia la red local");
     parser.add_argument("port",metavar="Puerto de escucha",help="Puerto donde se recibiran los magic packets",type=int);
