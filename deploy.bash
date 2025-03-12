@@ -12,7 +12,7 @@ python3 -m zipapp compiledist -o $NAME.pyz -m "boot:boot" --compress
 wine pyinstaller --noconfirm --onefile --name $NAME --clean wakeonlan.py
 wine pyinstaller --noconfirm --onedir --name $NAME --clean wakeonlan.py
 
-makensis installer.nsi
+#makensis installer.nsi
 
 rm -r build
 rm -r compiledist

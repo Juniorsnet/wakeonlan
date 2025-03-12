@@ -6,10 +6,10 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "boot.py",
-            "args": ["9999","222.22.2.255"],
+            "args": ["9999","255.255.255.255", "."],
             "console": "integratedTerminal",
             "justMyCode": true
         }
